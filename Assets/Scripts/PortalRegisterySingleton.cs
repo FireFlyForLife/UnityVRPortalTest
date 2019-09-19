@@ -8,7 +8,7 @@ public class PortalRegisterySingleton : MonoBehaviour
     public static PortalRegisterySingleton Instance { get; private set; }
     public List<KeyValuePair<Portal, Portal>> Portals = new List<KeyValuePair<Portal, Portal>>();
 
-    void Start()
+    void Awake()
     {
         if (Instance == null)
         {

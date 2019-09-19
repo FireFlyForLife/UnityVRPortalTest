@@ -5,7 +5,7 @@
 		_Color ("Color", Color) = (1, 1, 1, 1)
         _MainTex ("Texture", 2D) = "white" {}
 		_StencilReferenceID("Stencil ID Reference", Int) = 1
-		[Enum(UnityEngine.Rendering.Shader_ColorWriteMask)] _StillDrawToColorBuffer("Enable color output (For debugging purposes)", Float) = 255
+		_StillDrawToColorBuffer("Enable color output (For debugging purposes)", Float) = 255
     }
     SubShader
     {
@@ -31,7 +31,7 @@
 			}
 
             CGPROGRAM
-			#pragma target 4.5
+			#pragma target 5.0
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
@@ -67,10 +67,11 @@
                 return o;
             }
 
+			[earlydepthstencil]
             fixed4 frag (v2f i) : SV_Target
             {
 				//TODO: Test if there is a performance increase by just doing `= true`
-				perPortalPixelCount[_StencilReferenceID] += 1;
+				perPortalPixelCount[_StencilReferenceID] = 123321;
 
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv) * _Color;

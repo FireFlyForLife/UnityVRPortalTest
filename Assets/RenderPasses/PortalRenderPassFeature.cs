@@ -1,15 +1,25 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.LWRP;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.LWRP;
+using UnityEngine.Rendering.Universal;
 
 
 namespace PortalRendering
 {
+    using RenderQueueType = UnityEngine.Experimental.Rendering.Universal.RenderQueueType;
+
+
     public class PortalRenderContext : IDisposable
     {
         public ComputeBuffer computeBuffer;
+        public GameObject exitPortal;
+
+        public PortalRenderContext()
+        {
+            computeBuffer = new ComputeBuffer(255, sizeof(int));
+            computeBuffer.name = "perPortalPixelCountBuffer";
+            computeBuffer.SetData(new Int32[255], 0, 0, 255);
+        }
 
         public void Dispose()
         {
@@ -38,6 +48,7 @@ namespace PortalRendering
             public StencilStateData stencilSettings = new StencilStateData();
 
             public CustomCameraSettings cameraSettings = new CustomCameraSettings();
+            public GameObject exitPortal = null;
         }
 
         [System.Serializable]
@@ -74,6 +85,7 @@ namespace PortalRendering
         {
             portalRenderContext?.Dispose();
             portalRenderContext = new PortalRenderContext();
+            portalRenderContext.exitPortal = settings.exitPortal;
 
             FilterSettings filter = settings.filterSettings;
             renderPortalPass = new RenderPortalPass(settings.passTag, settings.Event, filter.PassNames,
@@ -90,13 +102,13 @@ namespace PortalRendering
                     settings.stencilSettings.stencilCompareFunction, settings.stencilSettings.passOperation,
                     settings.stencilSettings.failOperation, settings.stencilSettings.zFailOperation);
 
-            setupPortalBufferRenderPass = new SetupPortalBufferRenderPass("SetupPortalBuffer", portalRenderContext);
+            //setupPortalBufferRenderPass = new SetupPortalBufferRenderPass("SetupPortalBuffer", portalRenderContext);
+            Debug.Log("Created new portalrendererpass instance");
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             renderer.EnqueuePass(renderPortalPass);
-            renderer.EnqueuePass(setupPortalBufferRenderPass);
         }
     }
 }

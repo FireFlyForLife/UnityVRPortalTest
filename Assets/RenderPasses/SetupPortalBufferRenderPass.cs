@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.LWRP;
+
 
 namespace PortalRendering
 {
-    public class SetupPortalBufferRenderPass : ScriptableRenderPass
+    public class SetupPortalBufferRenderPass : UnityEngine.Rendering.Universal.ScriptableRenderPass
     {
         private PortalRenderContext portalRenderContext;
         private String m_ProfilerTag;
@@ -15,7 +15,7 @@ namespace PortalRendering
         public SetupPortalBufferRenderPass(string profilerTag, PortalRenderContext portalRenderContext)
         {
             m_ProfilerTag = profilerTag;
-            this.renderPassEvent = RenderPassEvent.BeforeRendering;
+            this.renderPassEvent = UnityEngine.Rendering.Universal.RenderPassEvent.BeforeRendering;
 
             this.portalRenderContext = portalRenderContext;
         }
@@ -24,11 +24,11 @@ namespace PortalRendering
         {
             base.Configure(cmd, cameraTextureDescriptor);
 
-            portalRenderContext.computeBuffer = new ComputeBuffer(255, sizeof(int));
-            portalRenderContext.computeBuffer.name = "perPortalPixelCountBuffer";
+            //portalRenderContext.computeBuffer = new ComputeBuffer(255, sizeof(int));
+            //portalRenderContext.computeBuffer.name = "perPortalPixelCountBuffer";
         }
 
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+        public override void Execute(ScriptableRenderContext context, ref UnityEngine.Rendering.Universal.RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get(m_ProfilerTag);
             using (new ProfilingSample(cmd, m_ProfilerTag))
@@ -44,7 +44,7 @@ namespace PortalRendering
         {
             base.FrameCleanup(cmd);
 
-            portalRenderContext.Dispose();
+            //portalRenderContext.Dispose();
         }
     }
 }
